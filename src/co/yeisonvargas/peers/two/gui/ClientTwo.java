@@ -7,6 +7,18 @@ package co.yeisonvargas.peers.two.gui;
 
 import co.yeisonvargas.peers.two.Facade;
 import co.yeisonvargas.peers.two.UserInterface;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -44,7 +56,7 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
         jTextAreaChat = new javax.swing.JTextArea();
         jButtonSend = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelPathFile = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaNewMessage = new javax.swing.JTextArea();
 
@@ -69,10 +81,15 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
         });
 
         jButton2.setText("Attach File");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setBackground(java.awt.Color.gray);
-        jLabel2.setFont(new java.awt.Font("Ubuntu", 3, 15)); // NOI18N
-        jLabel2.setText("Any file attached.");
+        jLabelPathFile.setBackground(java.awt.Color.gray);
+        jLabelPathFile.setFont(new java.awt.Font("Ubuntu", 3, 15)); // NOI18N
+        jLabelPathFile.setText("Any file attached.");
 
         jTextAreaNewMessage.setColumns(20);
         jTextAreaNewMessage.setRows(5);
@@ -100,7 +117,7 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
                         .addContainerGap()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabelPathFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -112,7 +129,7 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelPathFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -141,8 +158,49 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
             return;
         }
         System.out.println("Ok client Two");
-        System.out.println(this.serviceChat.sendMessageClientOne(jTextAreaNewMessage.getText(), ""));
+        // TODO: Check...
+        //System.out.println(this.serviceChat.sendMessageClientOne(jTextAreaNewMessage.getText(), ""));
     }//GEN-LAST:event_jButtonSendActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser input = new JFileChooser();
+        input.setFileSelectionMode(JFileChooser.FILES_ONLY);
+           
+        if(input.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = input.getSelectedFile();
+            
+            this.jLabelPathFile.setText(selectedFile.getAbsolutePath());
+            if(selectedFile.canRead()) {
+                
+                try {
+                    byte[] data = Files.readAllBytes(Paths.get(selectedFile.getPath()));
+                    this.serviceChat.sendMessageClientOne("Hola envie un archivo.", data, selectedFile.getName());
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientTwo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                /*
+                
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+                    while(reader.readLine() != null) {
+                        
+                    }
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ClientTwo.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientTwo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                */
+            } else {
+                System.err.println("Permission Denied.");
+            }
+        }
+        
+        
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,7 +244,7 @@ public class ClientTwo extends javax.swing.JFrame implements UserInterface {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonSend;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelPathFile;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

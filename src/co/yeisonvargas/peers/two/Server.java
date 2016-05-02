@@ -66,7 +66,7 @@ public class Server extends UnicastRemoteObject implements Backend {
     }    
 
     @Override
-    public boolean sendMessage(String message) throws RemoteException {
+    public boolean sendMessage(String message, byte [] contentFile, String name) throws RemoteException {
         System.out.println("Facade Two: " + this.messagesToMe.size());
         this.messagesToMe.add(new Message(message, "peerOne"));
         System.out.println("Facade Two: " + this.messagesToMe.size());

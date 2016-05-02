@@ -50,7 +50,7 @@ public class Facade {
             Registry myRegister = LocateRegistry.getRegistry(this.externalAddress, 
                     this.externalPort);       
             Backend backend = (Backend) (myRegister.lookup("server"));        
-            backend.sendMessage(message);
+            backend.sendMessage(message, null, "");
         } catch (RemoteException | NotBoundException e) {
             System.err.println(e.getMessage());
             return false;
@@ -69,7 +69,8 @@ public class Facade {
             Backend backend = (Backend)myRegister.lookup("server");        
             messagesSendToClientTwo = backend.getConversation();
             backend.getConversation();
-        } catch (Exception e) {
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println(e.getMessage());
             return null;
         }
         
@@ -78,7 +79,8 @@ public class Facade {
                     this.ownPort);       
             Backend backend = (Backend)myRegister.lookup("server");        
             messagesSendFromClientTwo = backend.getConversation();
-        } catch (Exception e) {
+        } catch (RemoteException | NotBoundException e) {
+            System.err.println(e.getMessage());
             return null;
         }
         

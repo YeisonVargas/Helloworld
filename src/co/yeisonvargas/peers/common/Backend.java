@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public interface Backend extends Remote {
     
     public String sayHello() throws RemoteException ;
-    public boolean sendMessage(String message) throws RemoteException;
+    public boolean sendMessage(String message, byte [] contentFile, String nameFile) throws RemoteException;
     public ArrayList<Message> getConversation() throws RemoteException;
     
 }

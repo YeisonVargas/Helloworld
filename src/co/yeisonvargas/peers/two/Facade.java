@@ -45,12 +45,12 @@ public class Facade {
         this.externalPort = externalPort;
     }
     
-    public boolean sendMessageClientOne(String message, String pathAttachment) {
+    public boolean sendMessageClientOne(String message, byte [] pathAttachment, String name) {       
         try {
             Registry myRegister = LocateRegistry.getRegistry(this.externalAddress, 
                     this.externalPort);       
             Backend backend = (Backend) (myRegister.lookup("server"));        
-            backend.sendMessage(message);
+            backend.sendMessage(message, pathAttachment, name);
         } catch (RemoteException | NotBoundException e) {
             System.err.println(e.getMessage());
             return false;
@@ -94,7 +94,7 @@ public class Facade {
         
         return normalizate(messages);
     }
-    
+        
     private ArrayList<String []> normalizate(ArrayList<Message> allMessages) {
         Collections.sort(allMessages);
         ArrayList<String []> result = new ArrayList<>();

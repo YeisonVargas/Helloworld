@@ -7,11 +7,16 @@ package co.yeisonvargas.peers.one;
 
 import co.yeisonvargas.peers.common.Message;
 import co.yeisonvargas.peers.common.Backend;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -66,8 +71,31 @@ public class Server extends UnicastRemoteObject implements Backend {
     }    
 
     @Override
-    public boolean sendMessage(String message) throws RemoteException {
+    public boolean sendMessage(String message, byte [] contentFile, String name) throws RemoteException {
         this.messagesToMe.add(new Message(message, "peerTwo"));
+        if(contentFile != null && name != null) {
+            FileOutputStream myStream = null;
+            try {
+                myStream = new FileOutputStream(name);
+                System.out.println(System.getProperty("user.dir"));  
+                System.out.println(name);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(myStream != null) {
+            try {
+                myStream.write(contentFile);
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {                
+                    myStream.close();              
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+                    
+        }
         ((UserInterface)this.contexUi).onMessageReceived();
         return true;
     }
